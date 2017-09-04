@@ -22,6 +22,9 @@
     <Filter Include="OtherGUI">
       <UniqueIdentifier>{6cf76bd3-0cef-4ba5-84a4-c4efd4302046}</UniqueIdentifier>
     </Filter>
+    <Filter Include="hAND">
+      <UniqueIdentifier>{32cee8ef-c999-4c6d-96a9-faa54cc492e7}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <None Include="ReadMe.txt" />
@@ -69,6 +72,36 @@
     <ClInclude Include="GripperControl.h">
       <Filter>OtherGUI</Filter>
     </ClInclude>
+    <ClInclude Include="..\src\frame\frame.h">
+      <Filter>hAND</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\main\scenario.h">
+      <Filter>hAND</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\object\object.h">
+      <Filter>hAND</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\opengl\opengl.h">
+      <Filter>hAND</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\rnGen\rnGen.h">
+      <Filter>hAND</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\robot\ArmHand.h">
+      <Filter>hAND</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\robot\robot.h">
+      <Filter>hAND</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\serial\Driver.h">
+      <Filter>hAND</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\serial\SerialClass.h">
+      <Filter>hAND</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\trajPlan\trajPlan.h">
+      <Filter>hAND</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Robot_v3.cpp">
@@ -100,6 +133,39 @@
     </ClCompile>
     <ClCompile Include="GripperControl.cpp">
       <Filter>Source Files\OtherGUI</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\frame\frame.cpp">
+      <Filter>hAND</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\main\main.cpp">
+      <Filter>hAND</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\main\scenario.cpp">
+      <Filter>hAND</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\object\object.cpp">
+      <Filter>hAND</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\opengl\opengl.cpp">
+      <Filter>hAND</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\rnGen\rnGen.cpp">
+      <Filter>hAND</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\robot\ArmHand.cpp">
+      <Filter>hAND</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\robot\robot.cpp">
+      <Filter>hAND</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\serial\Driver.cpp">
+      <Filter>hAND</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\serial\SerialClass.cpp">
+      <Filter>hAND</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\trajPlan\trajPlan.cpp">
+      <Filter>hAND</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

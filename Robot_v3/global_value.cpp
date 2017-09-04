@@ -1,4 +1,5 @@
 //#include "StdAfx.h"
+#include "stdafx.h"
 #include "global_value.h"
 
 

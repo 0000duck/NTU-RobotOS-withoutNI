@@ -21,7 +21,7 @@
     <UseDebugLibraries>true</UseDebugLibraries>
     <CharacterSet>MultiByte</CharacterSet>
     <UseOfMfc>Dynamic</UseOfMfc>
-    <PlatformToolset>v100</PlatformToolset>
+    <PlatformToolset>v120</PlatformToolset>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
@@ -29,7 +29,7 @@
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>MultiByte</CharacterSet>
     <UseOfMfc>Dynamic</UseOfMfc>
-    <PlatformToolset>v100</PlatformToolset>
+    <PlatformToolset>v120</PlatformToolset>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
   <ImportGroup Label="ExtensionSettings">
@@ -52,18 +52,18 @@
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
-      <PrecompiledHeader>Use</PrecompiledHeader>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>WIN32;_WINDOWS;_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>\OpenGL\Include;..\3rdParty\NTURlib\Controller;..\3rdParty\newmat;..\3rdParty;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\src\opengl;.\OpenGL\Include\;..\3rdParty\NTURlib\TechnoSoft;\OpenGL\Include;..\3rdParty\NTURlib\Controller;..\3rdParty\newmat;..\3rdParty;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>glu32.lib;opengl32.lib;freeglut.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>C:\Users\Kang\Desktop\Robot\Robot_107\Robot_v3\OpenGL\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>TCatIoDrv.lib;glut32.lib;freeglut.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>..\3rdParty\NTURlib\TechnoSoft\IO Api;OpenGL\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
     <Midl>
       <MkTypLibCompatible>false</MkTypLibCompatible>
@@ -85,14 +85,14 @@
       <IntrinsicFunctions>false</IntrinsicFunctions>
       <PreprocessorDefinitions>WIN32;_WINDOWS;NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
-      <AdditionalIncludeDirectories>..\3rdParty\NTURlib\TechnoSoft;..\3rdParty;..\3rdParty\NTURlib\Controller;..\3rdParty\newmat;OpenGL\Include;..\3rdParty\NTUSensors\ForceSensor;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\3rdParty\NTURlib\TechnoSoft;..\3rdParty;..\3rdParty\NTURlib\Controller;..\3rdParty\newmat;OpenGL\Include;..\3rdParty\NTUSensors\ForceSensor;%(AdditionalIncludeDirectories);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
-      <AdditionalDependencies>TCatIoDrv.lib;glut32.lib;freeglut.lib;force.lib</AdditionalDependencies>
+      <AdditionalDependencies>TCatIoDrv.lib;glut32.lib;freeglut.lib;force.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalLibraryDirectories>..\3rdParty\NTURlib\TechnoSoft\IO Api;OpenGL\lib;..\3rdParty\NTUSensors\ForceSensor\force;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <OutputFile>$(OutDir)$(TargetName)$(TargetExt)</OutputFile>
       <ShowProgress>NotSet</ShowProgress>
@@ -114,6 +114,16 @@
     <None Include="res\Robot_v3.rc2" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\src\frame\frame.h" />
+    <ClInclude Include="..\src\main\scenario.h" />
+    <ClInclude Include="..\src\object\object.h" />
+    <ClInclude Include="..\src\opengl\opengl.h" />
+    <ClInclude Include="..\src\rnGen\rnGen.h" />
+    <ClInclude Include="..\src\robot\ArmHand.h" />
+    <ClInclude Include="..\src\robot\robot.h" />
+    <ClInclude Include="..\src\serial\Driver.h" />
+    <ClInclude Include="..\src\serial\SerialClass.h" />
+    <ClInclude Include="..\src\trajPlan\trajPlan.h" />
     <ClInclude Include="AtomControl.h" />
     <ClInclude Include="AtomJointCtL.h" />
     <ClInclude Include="ATomTrajForm.h" />
@@ -128,6 +138,17 @@
     <ClInclude Include="targetver.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="..\src\frame\frame.cpp" />
+    <ClCompile Include="..\src\main\main.cpp" />
+    <ClCompile Include="..\src\main\scenario.cpp" />
+    <ClCompile Include="..\src\object\object.cpp" />
+    <ClCompile Include="..\src\opengl\opengl.cpp" />
+    <ClCompile Include="..\src\rnGen\rnGen.cpp" />
+    <ClCompile Include="..\src\robot\ArmHand.cpp" />
+    <ClCompile Include="..\src\robot\robot.cpp" />
+    <ClCompile Include="..\src\serial\Driver.cpp" />
+    <ClCompile Include="..\src\serial\SerialClass.cpp" />
+    <ClCompile Include="..\src\trajPlan\trajPlan.cpp" />
     <ClCompile Include="AtomControl.cpp" />
     <ClCompile Include="AtomJointCtL.cpp" />
     <ClCompile Include="ATomTrajForm.cpp" />
@@ -162,9 +183,6 @@
     </ProjectReference>
     <ProjectReference Include="..\NTURlib\NTURlib.vcxproj">
       <Project>{07f94b48-aaa0-43c2-879f-65e33abb3572}</Project>
-    </ProjectReference>
-    <ProjectReference Include="..\NTUSensors\NTUSensors.vcxproj">
-      <Project>{2b851821-0e20-48d3-8b61-4834b3b6fde4}</Project>
     </ProjectReference>
     <ProjectReference Include="..\roboop\roboop.vcxproj">
       <Project>{11c9fbc7-2190-47b2-8455-76d94f0b0f64}</Project>

@@ -61,7 +61,7 @@ Revision_history:
 #include "utils.h"
 
 #ifdef _MSC_VER
-#if _MSC_VER  < 1300                       // Microsoft
+#if _MSC_VER  < 1000                       // Microsoft
 #ifndef GUARD_minmax_H
 #define GUARD_minmax_H
 // needed to cope with bug in MS library:

@@ -771,6 +771,7 @@ void ProjectPlay::Atom_Impedance()
 	Mp = 1;Dp = 1;Kp = 1;  // End-effector Position impedance
 	Mp = 1;Do = 1;Ko = 1;  // End-effector Orientation impedance
 	Impedance AtomImp(robot_atom,Mp,Dp,Kp,Mo,Do,Ko);   //  Set Atom Robot impedance parameters
+
 }
 
 void ProjectPlay::Atom_Reset()

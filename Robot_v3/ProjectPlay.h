@@ -72,6 +72,5 @@ public:
 	// Gripper
 	void Grip_Command(int a);  //  a = 1 (close), 0 (open)
 	void GripperConnectOrDisConnect(int types);   // types = 1 (connect), 0 (disconnect)
-
 };
 #endif

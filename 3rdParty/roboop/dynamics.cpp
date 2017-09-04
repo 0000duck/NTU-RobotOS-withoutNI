@@ -264,6 +264,14 @@ ReturnMatrix Robot::torque(const ColumnVector & q, const ColumnVector & qp,
 
    ltorque.Release(); return ltorque;
 }
+ReturnMatrix Robot::torque_ejr(const ColumnVector & q, const ColumnVector & qp,
+	const ColumnVector & qpp, const ColumnVector & Fext, const ColumnVector & Next)
+{
+	ColumnVector ltorque(dof);
+
+
+	return ltorque;
+}
 
 ReturnMatrix Robot::torque_novelocity(const ColumnVector & qpp)
 /*!

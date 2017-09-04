@@ -70,6 +70,8 @@ Revision_history:
 
 #include "newmatio.h"                /* need matrix output routines */
 
+#include <minmax.h>
+
 #ifdef use_namespace
 namespace ROBOOP {
   using namespace NEWMAT;

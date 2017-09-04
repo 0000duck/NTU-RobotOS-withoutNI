@@ -361,6 +361,10 @@ public:
                                const ColumnVector & qpp,
                                const ColumnVector & Fext_,
                                const ColumnVector & Next_);
+   virtual ReturnMatrix torque_ejr(const ColumnVector & q, const ColumnVector & qp,
+								const ColumnVector & qpp,
+								const ColumnVector & Fext_,
+								const ColumnVector & Next_);
    virtual ReturnMatrix torque_novelocity(const ColumnVector & qpp);
    virtual void delta_torque(const ColumnVector & q, const ColumnVector & qp,
                              const ColumnVector & qpp, const ColumnVector & dq,

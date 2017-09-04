@@ -1,5 +1,5 @@
 
-//#include "StdAfx.h"
+#include "StdAfx.h"
 #include "OpenGLControl.h"
 #include "global_value.h"
 #ifndef PI

@@ -270,7 +270,7 @@ void CRobot_v3Dlg::OnBnClickedCheckAtom()
 	if (nCheck)
 	{
 		//Atom Initial
-		mProjectplay.project_InitAtom();
+		mProjectplay.project_InitAtom();  //  啟動project.cpp內的資訊
 		Atom_Joint_Btn.EnableWindow(true);
 		Atom_Cont_Btn.EnableWindow(true);
 		Atom_Traj_Btn.EnableWindow(true);
