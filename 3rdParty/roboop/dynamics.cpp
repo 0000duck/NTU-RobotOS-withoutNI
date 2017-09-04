@@ -267,10 +267,62 @@ ReturnMatrix Robot::torque(const ColumnVector & q, const ColumnVector & qp,
 ReturnMatrix Robot::torque_ejr(const ColumnVector & q, const ColumnVector & qp,
 	const ColumnVector & qpp, const ColumnVector & Fext, const ColumnVector & Next)
 {
+	int i;
 	ColumnVector ltorque(dof);
+	Matrix Rt, temp;
+	if (q.Nrows() != dof) error("q has wrong dimension");
+	if (qp.Nrows() != dof) error("qp has wrong dimension");
+	if (qpp.Nrows() != dof) error("qpp has wrong dimension");
+	set_q(q);
+	set_qp(qp);
 
+	vp[0] = gravity;
+	for (i = 1; i <= dof; i++) {
+		Rt = links[i].R.t();
+		if (links[i].get_joint_type() == 0) {
+			w[i] = Rt*(w[i - 1] + z0*qp(i));
+			wp[i] = Rt*(wp[i - 1] + z0*qpp(i)
+				+ CrossProduct(w[i - 1], z0*qp(i)));
+			vp[i] = CrossProduct(wp[i], p[i])
+				+ CrossProduct(w[i], CrossProduct(w[i], p[i]))
+				+ Rt*(vp[i - 1]);
+		}
+		else {
+			w[i] = Rt*w[i - 1];
+			wp[i] = Rt*wp[i - 1];
+			vp[i] = Rt*(vp[i - 1] + z0*qpp(i))
+				+ 2.0*CrossProduct(w[i], Rt*z0*qp(i))
+				+ CrossProduct(wp[i], p[i])
+				+ CrossProduct(w[i], CrossProduct(w[i], p[i]));
+		}
+		a[i] = CrossProduct(wp[i], links[i].r)
+			+ CrossProduct(w[i], CrossProduct(w[i], links[i].r))
+			+ vp[i];
+	}
 
-	return ltorque;
+	for (i = dof; i >= 1; i--) {
+		F[i] = a[i] * links[i].m;
+		N[i] = links[i].I*wp[i] + CrossProduct(w[i], links[i].I*w[i]);
+		if (i == dof) {
+			f[i] = F[i] + Fext;
+			n[i] = CrossProduct(p[i], f[i])
+				+ CrossProduct(links[i].r, F[i]) + N[i] + Next;
+		}
+		else {
+			f[i] = links[i + 1].R*f[i + 1] + F[i];
+			n[i] = links[i + 1].R*n[i + 1] + CrossProduct(p[i], f[i])
+				+ CrossProduct(links[i].r, F[i]) + N[i];
+		}
+		if (links[i].get_joint_type() == 0)
+			temp = ((z0.t()*links[i].R)*n[i]);
+		else
+			temp = ((z0.t()*links[i].R)*f[i]);
+		ltorque(i) = temp(1, 1)
+			+ links[i].Im*links[i].Gr*links[i].Gr*qpp(i)
+			+ links[i].Gr*(links[i].Gr*links[i].B*qp(i) + links[i].Cf*sign(qp(i)));
+	}
+
+	ltorque.Release(); return ltorque;
 }
 
 ReturnMatrix Robot::torque_novelocity(const ColumnVector & qpp)
