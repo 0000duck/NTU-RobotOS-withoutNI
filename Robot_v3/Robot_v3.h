@@ -10,6 +10,10 @@
 
 #include "resource.h"		// main symbols
 
+#ifdef _DEBUG  
+#include <CONIO.H>  
+#endif  
+
 
 // CRobot_v3App:
 // See Robot_v3.cpp for the implementation of this class

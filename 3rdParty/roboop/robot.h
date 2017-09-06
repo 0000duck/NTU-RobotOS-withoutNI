@@ -180,7 +180,9 @@ public:
 
    Matrix R;          //!< Orientation matrix of actual link w.r.t to previous link.
    Real qp,           //!< Joint velocity.
-        qpp;          //!< Joint acceleration.
+        qpp,          //!< Joint acceleration.
+        qppp;         //!<Joint jerk
+
 
 private:
    int joint_type;    //!< Joint type.
@@ -240,12 +242,15 @@ public:
    ReturnMatrix get_q(void)const;
    ReturnMatrix get_qp(void)const;
    ReturnMatrix get_qpp(void)const;
+   ReturnMatrix get_qppp(void)const;
    ReturnMatrix get_available_q(void)const { return get_available_q(dof); } //!< Return the joint position vector of available (non-immobile) joints.
    ReturnMatrix get_available_qp(void)const { return get_available_qp(dof); } //!< Return the joint velocity vector of available (non-immobile) joints.
    ReturnMatrix get_available_qpp(void)const { return get_available_qpp(dof); } //!< Return the joint acceleration vector of available (non-immobile) joints.
    ReturnMatrix get_available_q(const int endlink)const;
    ReturnMatrix get_available_qp(const int endlink)const;
    ReturnMatrix get_available_qpp(const int endlink)const;
+   ReturnMatrix get_available_qppp(const int endlink)const;
+
    void set_q(const ColumnVector & q);
    void set_q(const Matrix & q);
    void set_q(const Real q, const int i) {     //!< Set joint i position.
@@ -254,6 +259,7 @@ public:
    }
    void set_qp(const ColumnVector & qp);
    void set_qpp(const ColumnVector & qpp);
+   void set_qppp(const ColumnVector &qppp);
    void kine(Matrix & Rot, ColumnVector & pos)const;
    void kine(Matrix & Rot, ColumnVector & pos, const int j)const;
    ReturnMatrix kine(void)const;
@@ -306,8 +312,8 @@ public:
    virtual ReturnMatrix C(const ColumnVector & qp) = 0;
    void error(const std::string & msg1) const;
 
-   ColumnVector *w, *wp, *vp, *a, *f, *f_nv, *n, *n_nv, *F, *N, *p, *pp,
-   *dw, *dwp, *dvp, *da, *df, *dn, *dF, *dN, *dp, 
+   ColumnVector *w, *wp, *wpp, *wppp, *vp, *vpp, *vppp, *a, *ap, *app, *f, *fd, *fdd, *f_nv, *n, *nd, *ndd, *n_nv, 
+	   *F, *Fd, *Fdd, *N, *Nd, *Ndd, *p, *pp, *dw, *dwp, *dvp, *da, *df, *dn, *dF, *dN, *dp, 
        z0,      //!< Axis vector at each joint.
        gravity; //!< Gravity vector.
    Matrix *R;   //!< Temprary rotation matrix.
@@ -363,6 +369,9 @@ public:
                                const ColumnVector & Next_);
    virtual ReturnMatrix torque_ejr(const ColumnVector & q, const ColumnVector & qp,
 								const ColumnVector & qpp,
+								const ColumnVector & qppp,
+								const ColumnVector & qpppp,
+								const ColumnVector &Ks,
 								const ColumnVector & Fext_,
 								const ColumnVector & Next_);
    virtual ReturnMatrix torque_novelocity(const ColumnVector & qpp);

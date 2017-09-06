@@ -102,6 +102,9 @@
     <ClInclude Include="..\src\trajPlan\trajPlan.h">
       <Filter>hAND</Filter>
     </ClInclude>
+    <ClInclude Include="MyControlProject.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Robot_v3.cpp">
@@ -166,6 +169,9 @@
     </ClCompile>
     <ClCompile Include="..\src\trajPlan\trajPlan.cpp">
       <Filter>hAND</Filter>
+    </ClCompile>
+    <ClCompile Include="MyControlProject.cpp">
+      <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

@@ -1,6 +1,6 @@
 #ifndef __PROJECTPLAY_H
 #define __PROJECTPLAY_H
-
+#endif
 #pragma  once
 #include "global_value.h"
 #include <fstream>
@@ -37,7 +37,6 @@ public:
 	void Project_SaveFile();
 	void Project_test();
 	// Dynamics test fcn
-	void AtomDynControl();
 	double *Atom_P;
 	void project_InitAtom();
 	void project_AtomStep(int num);
@@ -72,5 +71,11 @@ public:
 	// Gripper
 	void Grip_Command(int a);  //  a = 1 (close), 0 (open)
 	void GripperConnectOrDisConnect(int types);   // types = 1 (connect), 0 (disconnect)
+public:
+	void Project_1();
+public:   // Control methods
+	void ComputedTorqueControl();
+	void ImpedanceControl();
+	void OperationalSpaceControl();
+	void NullSpaceControl();
 };
-#endif

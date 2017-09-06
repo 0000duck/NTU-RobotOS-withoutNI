@@ -10,6 +10,7 @@
 #include "OpenGLControl.h"  //  opengl header
 #include <afxcmn.h>  //  ¶}console header
 
+
 // CRobot_v3Dlg dialog
 class CRobot_v3Dlg : public CDialogEx
 {

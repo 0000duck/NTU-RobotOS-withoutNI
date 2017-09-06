@@ -179,7 +179,7 @@ Link::Link(const int jt, const Real it, const Real id, const Real ia, const Real
    ca = cos(alpha);
    sa = sin(alpha);
 
-   qp = qpp = 0.0;
+   qp = qpp = qppp = 0.0;
 
    if (DH)
    {
@@ -378,7 +378,11 @@ Robot_basic::Robot_basic(const Matrix & dhinit, const bool dh_parameter,
       links = links-1;
       w    = new ColumnVector[dof+1];
       wp   = new ColumnVector[dof+1];
+	  wpp = new ColumnVector[dof + 1];
+	  wppp = new ColumnVector[dof + 1];
       vp   = new ColumnVector[dof+fix+1];
+	  vpp = new ColumnVector[dof + fix + 1];
+	  vppp = new ColumnVector[dof + fix + 1];
       a    = new ColumnVector[dof+1];
       f    = new ColumnVector[dof+1];
       f_nv = new ColumnVector[dof+1];
@@ -412,7 +416,13 @@ Robot_basic::Robot_basic(const Matrix & dhinit, const bool dh_parameter,
       w[i] = 0.0;
       wp[i] = ColumnVector(3);
       wp[i] = 0.0;
+	  wpp[i] = ColumnVector(3);
+	  wpp[i] = 0.0;
+	  wppp[i] = ColumnVector(3);
+	  wppp[i] = 0.0;
       vp[i] = ColumnVector(3);
+	  vpp[i] = ColumnVector(3);
+	  vppp[i] = ColumnVector(3);
       dw[i] = ColumnVector(3);
       dw[i] = 0.0;
       dwp[i] = ColumnVector(3);
@@ -487,14 +497,28 @@ Robot_basic::Robot_basic(const Matrix & initrobot, const Matrix & initmotor,
       links = links-1;
       w    = new ColumnVector[dof+1];
       wp   = new ColumnVector[dof+1];
+	  wpp = new ColumnVector[dof + 1];
+	  wppp = new ColumnVector[dof + 1];
       vp   = new ColumnVector[dof+fix+1];
+	  vpp = new ColumnVector[dof + fix + 1];
+	  vppp = new ColumnVector[dof + fix + 1];
       a    = new ColumnVector[dof+1];
+	  ap   = new ColumnVector[dof + 1];
+	  app  = new ColumnVector[dof + 1];
       f    = new ColumnVector[dof+1];
+	  fd   = new ColumnVector[dof + 1];
+	  fdd  = new ColumnVector[dof + 1];
       f_nv = new ColumnVector[dof+1];
       n    = new ColumnVector[dof+1];
+	  nd   = new ColumnVector[dof + 1];
+	  ndd  = new ColumnVector[dof + 1];
       n_nv = new ColumnVector[dof+1];
       F    = new ColumnVector[dof+1];
+	  Fd   = new ColumnVector[dof + 1];
+	  Fdd  = new ColumnVector[dof + 1];
       N    = new ColumnVector[dof+1];
+	  Nd   = new ColumnVector[dof + 1];
+	  Ndd  = new ColumnVector[dof + 1];
       p    = new ColumnVector[dof+fix+1];
       pp   = new ColumnVector[dof+fix+1];
       dw   = new ColumnVector[dof+1];
@@ -521,7 +545,13 @@ Robot_basic::Robot_basic(const Matrix & initrobot, const Matrix & initmotor,
       w[i] = 0.0;
       wp[i] = ColumnVector(3);
       wp[i] = 0.0;
+	  wpp[i] = ColumnVector(3);
+	  wpp[i] = 0.0;
+	  wppp[i] = ColumnVector(3);
+	  wppp[i] = 0.0;
       vp[i] = ColumnVector(3);
+	  vpp[i] = ColumnVector(3);
+	  vppp[i] = ColumnVector(3);
       dw[i] = ColumnVector(3);
       dw[i] = 0.0;
       dwp[i] = ColumnVector(3);
@@ -593,7 +623,11 @@ Robot_basic::Robot_basic(const int ndof, const bool dh_parameter,
       links = links-1;
       w    = new ColumnVector[dof+1];
       wp   = new ColumnVector[dof+1];
+	  wpp  = new ColumnVector[dof + 1];
+	  wppp = new ColumnVector[dof + 1];
       vp   = new ColumnVector[dof+1];
+	  vpp  = new ColumnVector[dof + 1];
+	  vppp = new ColumnVector[dof + 1];
       a    = new ColumnVector[dof+1];
       f    = new ColumnVector[dof+1];
       f_nv = new ColumnVector[dof+1];
@@ -626,7 +660,13 @@ Robot_basic::Robot_basic(const int ndof, const bool dh_parameter,
       w[i] = 0.0;
       wp[i] = ColumnVector(3);
       wp[i] = 0.0;
+	  wpp[i] = ColumnVector(3);
+	  wpp[i] = 0.0;
+	  wppp[i] = ColumnVector(3);
+	  wppp[i] = 0.0;
       vp[i] = ColumnVector(3);
+	  vpp[i] = ColumnVector(3);
+	  vppp[i] = ColumnVector(3);
       dw[i] = ColumnVector(3);
       dw[i] = 0.0;
       dwp[i] = ColumnVector(3);
@@ -659,7 +699,11 @@ Robot_basic::Robot_basic(const Robot_basic & x)
       links = links-1;
       w    = new ColumnVector[dof+1];
       wp   = new ColumnVector[dof+1];
+	  wpp  = new ColumnVector[dof + 1];
+	  wppp = new ColumnVector[dof + 1];
       vp   = new ColumnVector[dof+1];
+	  vpp = new ColumnVector[dof + 1];
+	  vppp = new ColumnVector[dof + 1];
       a    = new ColumnVector[dof+1];
       f    = new ColumnVector[dof+1];
       f_nv = new ColumnVector[dof+1];
@@ -692,7 +736,13 @@ Robot_basic::Robot_basic(const Robot_basic & x)
       w[i] = 0.0;
       wp[i] = ColumnVector(3);
       wp[i] = 0.0;
+	  wpp[i] = ColumnVector(3);
+	  wpp[i] = 0.0;
+	  wppp[i] = ColumnVector(3);
+	  wppp[i] = 0.0;
       vp[i] = ColumnVector(3);
+	  vpp[i] = ColumnVector(3);
+	  vppp[i] = ColumnVector(3);
       dw[i] = ColumnVector(3);
       dw[i] = 0.0;
       dwp[i] = ColumnVector(3);
@@ -760,7 +810,11 @@ Robot_basic::Robot_basic(const string & filename, const string & robotName,
       links = links-1;
       w    = new ColumnVector[dof+1];
       wp   = new ColumnVector[dof+1];
+	  wpp = new ColumnVector[dof + 1];
+	  wppp = new ColumnVector[dof + 1];
       vp   = new ColumnVector[dof+fix+1];
+	  vpp = new ColumnVector[dof + fix + 1];
+	  vppp = new ColumnVector[dof + fix + 1];
       a    = new ColumnVector[dof+1];
       f    = new ColumnVector[dof+1];
       f_nv = new ColumnVector[dof+1];
@@ -793,7 +847,13 @@ Robot_basic::Robot_basic(const string & filename, const string & robotName,
       w[i] = 0.0;
       wp[i] = ColumnVector(3);
       wp[i] = 0.0;
+	  wpp[i] = ColumnVector(3);
+	  wpp[i] = 0.0;
+	  wppp[i] = ColumnVector(3);
+	  wppp[i] = 0.0;
       vp[i] = ColumnVector(3);
+	  vpp[i] = ColumnVector(3);
+	  vppp[i] = ColumnVector(3);
       dw[i] = ColumnVector(3);
       dw[i] = 0.0;
       dwp[i] = ColumnVector(3);
@@ -911,7 +971,13 @@ Robot_basic & Robot_basic::operator=(const Robot_basic & x)
          delete []f_nv;
          delete []f;
          delete []a;
+		 delete []ap;
+		 delete []app;
          delete []vp;
+		 delete []vpp;
+		 delete []vppp;
+		 delete []wppp;
+		 delete []wpp;
          delete []wp;
          delete []w;
          dof = x.dof;
@@ -925,8 +991,14 @@ Robot_basic & Robot_basic::operator=(const Robot_basic & x)
             links = links-1;
             w     = new ColumnVector[dof+1];
             wp    = new ColumnVector[dof+1];
+			wpp   = new ColumnVector[dof + 1];
+			wppp  = new ColumnVector[dof + 1];
             vp    = new ColumnVector[dof+fix+1];
+			vpp   = new ColumnVector[dof + fix + 1];
+			vppp  = new ColumnVector[dof + fix + 1];
             a     = new ColumnVector[dof+1];
+			ap    = new ColumnVector[dof + 1];
+			app   = new ColumnVector[dof + 1];
             f     = new ColumnVector[dof+1];
             f_nv  = new ColumnVector[dof+1];
             n     = new ColumnVector[dof+1];
@@ -958,7 +1030,13 @@ Robot_basic & Robot_basic::operator=(const Robot_basic & x)
          w[i] = 0.0;
          wp[i] = ColumnVector(3);
          wp[i] = 0.0;
+		 wpp[i] = ColumnVector(3);
+		 wpp[i] = 0.0;
+		 wppp[i] = ColumnVector(3);
+		 wppp[i] = 0.0;
          vp[i] = ColumnVector(3);
+		 vpp[i] = ColumnVector(3);
+		 vppp[i] = ColumnVector(3);
          dw[i] = ColumnVector(3);
          dw[i] = 0.0;
          dwp[i] = ColumnVector(3);
@@ -1026,6 +1104,14 @@ ReturnMatrix Robot_basic::get_qpp(void)const
       qpp(i) = links[i].qpp;
    qpp.Release(); return qpp;
 }
+ReturnMatrix Robot_basic::get_qppp(void)const
+{
+	ColumnVector qppp(dof);
+	for (int i = 1; i <= dof; i++)
+		qppp(i) = links[i].qppp;
+
+	qppp.Release(); return qppp;
+}
 
 ReturnMatrix Robot_basic::get_available_q(const int endlink)const
 //! @brief Return the joint position vector of available (non-immobile) joints up to and including @a endlink.
@@ -1061,6 +1147,17 @@ ReturnMatrix Robot_basic::get_available_qpp(const int endlink)const
       if(!links[i].immobile)
          qpp(j) = links[i].qpp;
    qpp.Release(); return qpp;
+}
+ReturnMatrix Robot_basic::get_available_qppp(const int endlink)const
+//! @brief Return the joint acceleration vector of available (non-immobile) joints up to and including @a endlink.
+{
+	ColumnVector qppp(get_available_dof(endlink));
+
+	int j = 1;
+	for (int i = 1; i <= endlink; i++)
+	if (!links[i].immobile)
+		qppp(j) = links[i].qppp;
+	qppp.Release(); return qppp;
 }
 
 void Robot_basic::set_q(const Matrix & q)
@@ -1193,6 +1290,15 @@ void Robot_basic::set_qpp(const ColumnVector & qpp)
    else
       error("qpp has the wrong dimension in set_qpp()");
 }
+void Robot_basic::set_qppp(const ColumnVector & qppp)
+//! @brief Set the joint acceleration vector.
+{
+	if (qppp.Nrows() == dof)
+	for (int i = 1; i <= dof; i++)
+		links[i].qppp = qppp(i);
+	else
+		error("qpp has the wrong dimension in set_qpp()");
+}
 
 
 void Robot_basic::cleanUpPointers() 
@@ -1217,12 +1323,22 @@ void Robot_basic::cleanUpPointers()
         delete []pp;
         delete []p;
         delete []N;
+		delete []Nd;
+		delete []Ndd;
         delete []F;
+		delete []Fd;
+		delete []Fdd;
         delete []n_nv;
         delete []n;
+		delete []nd;
+		delete []ndd;
         delete []f_nv;
         delete []f;
+		delete []fd;
+		delete []fdd;
         delete []a;
+		delete []ap;
+		delete []app;
         delete []vp;
         delete []wp;
         delete []w;

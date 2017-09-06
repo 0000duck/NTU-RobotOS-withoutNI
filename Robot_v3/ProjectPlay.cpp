@@ -2,6 +2,7 @@
 #include <Windows.h>
 #include "ProjectPlay.h"
 #include <vector>
+#include <thread>
 ///////////////////////////////
 #include <algorithm>
 #include <iterator>
@@ -29,7 +30,8 @@ std::vector<int> TrajTypes;  // Trajectory 每一個set的軌跡演算法
 std::vector<ColumnVector> TrajALLtimes;  // Trajectory 全部的時間
 bool Atom_Motorsend = false;
 
-ProjectPlay::ProjectPlay(){}
+ProjectPlay::ProjectPlay(){
+}
 ProjectPlay::~ProjectPlay(){
 }
 //
@@ -42,6 +44,10 @@ const Real Atom_data_DH[] =
 	0, 0, 0, -0.01, -M_PI/2.0, 0, 0, -M_PI/2,/* */ 0.236, 0.0347, 0.00691, 0.000406, /* */ 0.00023, 0, 0, 0.000305, 0, 0.000193, 0, 
 	0, 0, 0.28, 0, M_PI/2.0, 0, 0, M_PI,/* */ 1.331, 0.00103, 0.000588, 0.1606,/* */ 0.00566, 0, 0, 0.00558, 0, 0.000569, 0, 
 	0, 0, 0, 0.1451, M_PI/2.0, 0, 0, M_PI/2.0,/* */ 0.274, 0.000177, 0.0371, -0.00124,/* */ 0.000198, 0, 0, 0.000124, 0, 0.000134, 0
+};
+const Real atomKs[] = 
+{
+	1000,1000,1000,1000,1000,1000
 };
 
 const Real Atom_motor[] =  // Im Gr B Cf [3863 3257 2642 2642 2642 2232]
@@ -114,6 +120,10 @@ std::vector<std::vector<float>> SaveALLFeedbackq;   //  Output feedback theta
 std::vector<std::vector<float>> SaveALLFeedbackqd;   //  Output feedback theta dot
 std::vector<std::vector<float>> SaveALLFeedbackqdd;   //  Output feedback theta ddot
 std::vector<std::vector<float>> SaveALLFeedbackTorque;   //  Output feedback Torque
+void ProjectPlay::Project_1()
+{
+
+}
 void AllSaveFileClear()
 {
 	//SaveALLTimes.clear();
@@ -421,7 +431,6 @@ void ProjectPlay::project_ATomThreadClose()
 	ATomThreadClose = true;
 }
 
-
 void ProjectPlay::project_InitAtom()
 {
 	Matrix initrobot, initrobotm;
@@ -464,7 +473,7 @@ void ProjectPlay::project_InitAtom()
 
 	pOpenGLControl.glFlagATomStick = true;
 
-	cout<<"/////////////////////////////////////////////////"<<endl;
+	cout<<"////////////////////////////////////////////////"<<endl;
 	//  啟動Tread
 	int Data_Of_Thread_1 = 1;
 	HANDLE Handle_Of_Thread_1 = 0;
@@ -481,12 +490,6 @@ void ProjectPlay::project_InitAtom()
 	TrajTimes.push_back(0);
 	TrajTypes.push_back(0);
 }
-
-void ProjectPlay::AtomDynControl()
-{
-	// Trajectory Planning
-}
-
 void ProjectPlay::project_AtomStep(int num)
 {
 
@@ -682,6 +685,7 @@ void ProjectPlay::Atom_dynamics_Test()
 		tempQdd = qsdd.Row(i).as_column();
 		TorOut = robot_atom.torque(tempQ,tempQd,tempQdd,Fext,Next);
 		std::vector<float> _tempTorque; // for save all output torque
+		cout << TorOut.as_row() << endl;
 		for (int jj=1;jj<=6;jj++){
 			_tempTorque.push_back(TorOut(jj));
 		}
@@ -722,7 +726,7 @@ void ProjectPlay::Atom_torqueCtl()
 	Kp = 10;   //  q error
 	Kv = 20;   //  qdot error
 	ColumnVector qtemp,qdtemp,qddtemp;
-	Matrix TorAll, Tortemp;
+	Matrix TorAll, Tortemp, AccMat;
 	Computed_torque_method AtomCTM(robot_atom,Kp,Kv);
 	//  save file
 	/////
@@ -733,6 +737,8 @@ void ProjectPlay::Atom_torqueCtl()
 		robot_atom.set_q(qtemp);
 		robot_atom.set_qp(qdtemp);
 		Tortemp =  AtomCTM.torque_cmd(robot_atom,qtemp,qdtemp,qddtemp);
+		AccMat = robot_atom.acceleration(qtemp, qdtemp, Tortemp);
+		cout << AccMat.AsRow() << endl;
 		//
 		std::vector<float> _tempTorque;
 		std::vector<float> _tempRefq;

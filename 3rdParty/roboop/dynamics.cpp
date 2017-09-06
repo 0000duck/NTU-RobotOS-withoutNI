@@ -265,7 +265,10 @@ ReturnMatrix Robot::torque(const ColumnVector & q, const ColumnVector & qp,
    ltorque.Release(); return ltorque;
 }
 ReturnMatrix Robot::torque_ejr(const ColumnVector & q, const ColumnVector & qp,
-	const ColumnVector & qpp, const ColumnVector & Fext, const ColumnVector & Next)
+	const ColumnVector & qpp, const ColumnVector & qppp, const ColumnVector & qpppp,
+	const ColumnVector &Ks, const ColumnVector & Fext, const ColumnVector & Next)
+	/*! Joint Troque output with Elastic-joint Dynamics and External Force
+	*/
 {
 	int i;
 	ColumnVector ltorque(dof);
@@ -273,24 +276,46 @@ ReturnMatrix Robot::torque_ejr(const ColumnVector & q, const ColumnVector & qp,
 	if (q.Nrows() != dof) error("q has wrong dimension");
 	if (qp.Nrows() != dof) error("qp has wrong dimension");
 	if (qpp.Nrows() != dof) error("qpp has wrong dimension");
+	if (qppp.Nrows() != dof) error("qpp has wrong dimension");
+	if (qpppp.Nrows() != dof) error("qpp has wrong dimension");
 	set_q(q);
 	set_qp(qp);
+	set_qpp(qpp);
+	set_qpp(qppp);
+
 
 	vp[0] = gravity;
+	//  Forward recursion
 	for (i = 1; i <= dof; i++) {
 		Rt = links[i].R.t();
 		if (links[i].get_joint_type() == 0) {
 			w[i] = Rt*(w[i - 1] + z0*qp(i));
 			wp[i] = Rt*(wp[i - 1] + z0*qpp(i)
 				+ CrossProduct(w[i - 1], z0*qp(i)));
+			wpp[i] = Rt*(wpp[i - 1] + qppp(i)*z0 +
+				CrossProduct(wp[i - 1], qp(i)*z0) +
+				CrossProduct(w[i - 1], (2 * qpp(i)*z0 +
+				CrossProduct(w[i - 1], qp(i)*z0))));
+			wppp[i] = Rt*(wppp[i - 1] + qpppp(i)*z0 + 3 * CrossProduct(wp[i - 1], qpp(i)*z0)+
+				CrossProduct(3 * w[i - 1], (qppp(i)*z0 + CrossProduct(w[i - 1], qpp(i)*z0))) +
+				CrossProduct(2 * wp[i - 1], CrossProduct(w[i - 1], qp(i)*z0))+
+				CrossProduct(w[i - 1], CrossProduct(w[i - 1], CrossProduct(w[i - 1], qp(i)*z0))+CrossProduct(wp[i - 1], qp(i)*z0))+
+				CrossProduct(wpp[i - 1], qp(i)*z0));
 			vp[i] = CrossProduct(wp[i], p[i])
 				+ CrossProduct(w[i], CrossProduct(w[i], p[i]))
 				+ Rt*(vp[i - 1]);
+			vpp[i] = Rt*(vpp[i - 1])+ 2*CrossProduct(wp[i], CrossProduct(w[i],p[i]))+
+				CrossProduct(w[i], CrossProduct(wp[i], p[i])+CrossProduct(w[i], CrossProduct(w[i], p[i])))+
+				CrossProduct(wpp[i],p[i]);
+			vppp[i] = Rt*vppp[i - 1]+CrossProduct(wppp[i],p[i])+CrossProduct(3*wpp[i],CrossProduct(w[i],p[i]))+
+				CrossProduct(3*wp[i],CrossProduct(wp[i],p[i])+CrossProduct(w[i],CrossProduct(w[i],p[i])))+
+				CrossProduct(w[i], CrossProduct(wpp[i], p[i]) + CrossProduct(2 * wp[i], CrossProduct(w[i], p[i]))) +
+				CrossProduct(w[i], CrossProduct(w[i], CrossProduct(wp[i], p[i]) + CrossProduct(w[i], CrossProduct(w[i],p[i]))));
 		}
 		else {
 			w[i] = Rt*w[i - 1];
 			wp[i] = Rt*wp[i - 1];
-			vp[i] = Rt*(vp[i - 1] + z0*qpp(i))
+			vp[i] = Rt*(vp[i - 1] + z0*qpp(i)) 
 				+ 2.0*CrossProduct(w[i], Rt*z0*qp(i))
 				+ CrossProduct(wp[i], p[i])
 				+ CrossProduct(w[i], CrossProduct(w[i], p[i]));
@@ -298,20 +323,55 @@ ReturnMatrix Robot::torque_ejr(const ColumnVector & q, const ColumnVector & qp,
 		a[i] = CrossProduct(wp[i], links[i].r)
 			+ CrossProduct(w[i], CrossProduct(w[i], links[i].r))
 			+ vp[i];
+		ap[i] = vpp[i] + CrossProduct(wpp[i], links[i].r) + CrossProduct(2 * wp[i], CrossProduct(w[i], links[i].r)) +
+			CrossProduct(w[i], CrossProduct(wp[i], links[i].r) + CrossProduct(w[i], CrossProduct(w[i], links[i].r)));
+		app[i] = vppp[i] + CrossProduct(wppp[i], links[i].r) + CrossProduct(3 * wpp[i], CrossProduct(w[i], links[i].r))+
+			CrossProduct(3 * wp[i], CrossProduct(wp[i], links[i].r) + CrossProduct(w[i], CrossProduct(w[i], links[i].r)))+
+			CrossProduct(w[i], CrossProduct(wpp[i], links[i].r) + CrossProduct(2 * wp[i], CrossProduct(w[i], links[i].r)))+
+			CrossProduct(w[i], CrossProduct(w[i], CrossProduct(wp[i], links[i].r) + CrossProduct(w[i], CrossProduct(w[i], links[i].r))));
 	}
-
+	//  Backward Recursion
 	for (i = dof; i >= 1; i--) {
 		F[i] = a[i] * links[i].m;
+		Fd[i] = ap[i] * links[i].m;
+		Fdd[i] = app[i] * links[i].m;
 		N[i] = links[i].I*wp[i] + CrossProduct(w[i], links[i].I*w[i]);
+		Nd[i] = CrossProduct(w[i], links[i].I * wp[i] + N[i]) +
+			links[i].I*(CrossProduct(wp[i], w[i]) + wpp[i]) +
+			CrossProduct(wp[i], links[i].I*w[i]);
+		Ndd[i] = CrossProduct(wp[i], links[i].I*wp[i] + 2 * N[i]) +
+			CrossProduct(wpp[i], links[i].I*w[i]) +
+			links[i].I*(2 * CrossProduct(wp[i], w[i]) + CrossProduct(w[i], CrossProduct(w[i], wp[i])) + wppp[i]) +
+			CrossProduct(w[i], CrossProduct(w[i], links[i].I*wp[i]) + 2 * links[i].I*(wpp[i] + CrossProduct(wp[i], w[i])) + Nd[i]);
 		if (i == dof) {
 			f[i] = F[i] + Fext;
+			fd[i] = 0.0;
+			fdd[i] = 0.0;
+
 			n[i] = CrossProduct(p[i], f[i])
 				+ CrossProduct(links[i].r, F[i]) + N[i] + Next;
+			nd[i] = CrossProduct(CrossProduct(w[i], links[i].r), F[i]) + CrossProduct(links[i].r, Fd[i]) +
+				CrossProduct(CrossProduct(w[i], p[i]), f[i]) + CrossProduct(p[i], fd[i])+Nd[i];
+			ndd[i] = 2 * CrossProduct(CrossProduct(w[i], links[i].r), Fd[i]) +
+				CrossProduct(CrossProduct(wp[i], links[i].r) + CrossProduct(w[i], CrossProduct(w[i], links[i].r)), F[i]) +
+				CrossProduct(CrossProduct(wp[i], p[i]) + CrossProduct(w[i], CrossProduct(w[i], p[i])), f[i]) +
+				CrossProduct(links[i].r, Fdd[i]) + Ndd[i] +
+				2 * CrossProduct(CrossProduct(w[i], p[i]), fd[i]) + CrossProduct(p[i], fdd[i]);
 		}
 		else {
 			f[i] = links[i + 1].R*f[i + 1] + F[i];
+			fd[i] = links[i + 1].R*fd[i + 1] + Fd[i];
+			fdd[i] = links[i + 1].R*fdd[i + 1] + Fdd[i];
+
 			n[i] = links[i + 1].R*n[i + 1] + CrossProduct(p[i], f[i])
 				+ CrossProduct(links[i].r, F[i]) + N[i];
+			nd[i] = links[i + 1].R*nd[i + 1]+CrossProduct(CrossProduct(w[i], links[i].r), F[i]) + CrossProduct(links[i].r, Fd[i]) +
+				CrossProduct(CrossProduct(w[i], p[i]), f[i]) + CrossProduct(p[i], fd[i]) + Nd[i];
+			ndd[i] = links[i + 1].R*ndd[i + 1]+2 * CrossProduct(CrossProduct(w[i], links[i].r), Fd[i]) +
+				CrossProduct(CrossProduct(wp[i], links[i].r) + CrossProduct(w[i], CrossProduct(w[i], links[i].r)), F[i]) +
+				CrossProduct(CrossProduct(wp[i], p[i]) + CrossProduct(w[i], CrossProduct(w[i], p[i])), f[i]) +
+				CrossProduct(links[i].r, Fdd[i]) + Ndd[i] +
+				2 * CrossProduct(CrossProduct(w[i], p[i]), fd[i]) + CrossProduct(p[i], fdd[i]);
 		}
 		if (links[i].get_joint_type() == 0)
 			temp = ((z0.t()*links[i].R)*n[i]);

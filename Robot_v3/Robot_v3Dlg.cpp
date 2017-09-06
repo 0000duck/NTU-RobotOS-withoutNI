@@ -23,8 +23,17 @@ bool gSendingLife = true;//  arm control 是否工作旗標
 bool gSendingThreadOpened = false; // 指示手臂部控制thread是否打開
 void commandThreadControl( bool shallWe);
 float gTimer = 5.0; // 5ms
-
-
+// Open a console
+void CRobot_v3Dlg::InitConsole()
+{
+	int nRet = 0;
+	FILE* fp;
+	AllocConsole();
+	nRet = _open_osfhandle((long)GetStdHandle(STD_OUTPUT_HANDLE), _O_TEXT);
+	fp = _fdopen(nRet, "w");
+	*stdout = *fp;
+	setvbuf(stdout, NULL, _IONBF, 0);
+}
 
 // CAboutDlg dialog used for App About
 
@@ -132,7 +141,6 @@ BOOL CRobot_v3Dlg::OnInitDialog()
 
 	// TODO: Add extra initialization here
 	InitConsole();  //  open the console
-
 	//*********Opengl Control*************
 	CRect rect;
 
@@ -147,7 +155,6 @@ BOOL CRobot_v3Dlg::OnInitDialog()
 	m_OpenGLControl.m_unpTimer = m_OpenGLControl.SetTimer(1,1,0);
 
 	//*********Opengl Control end*************
-
 
 	return TRUE;  // return TRUE  unless you set the focus to a control
 }
@@ -233,21 +240,10 @@ HCURSOR CRobot_v3Dlg::OnQueryDragIcon()
 	return static_cast<HCURSOR>(m_hIcon);
 }
 
-void CRobot_v3Dlg::InitConsole()  
-{  
-	int nRet= 0;  
-	FILE* fp;  
-	AllocConsole();  
-	nRet= _open_osfhandle((long)GetStdHandle(STD_OUTPUT_HANDLE), _O_TEXT);  
-	fp = _fdopen(nRet, "w");  
-	*stdout = *fp;  
-	setvbuf(stdout, NULL, _IONBF, 0);  
-} 
-
 void CRobot_v3Dlg::OnBnClickedButton1()
 {
 	ProjectPlay mProjectplay;   //  sub-Project C++ can write anything... 
-	mProjectplay.AtomDynControl();
+	//mProjectplay.AtomDynControl();
 	//m_OpenGLControl.a = true;
 }
 
@@ -292,9 +288,6 @@ void CRobot_v3Dlg::OnBnClickedNtu8dofbtn()
 {
 	// TODO: 在此加入控制項告知處理常式程式碼
 }
-
-
-
 
 void CRobot_v3Dlg::OnBnClickedCheckNtu8dof()
 {
