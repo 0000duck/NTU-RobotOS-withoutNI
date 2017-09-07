@@ -2,12 +2,16 @@
 #define __OpenGLControl_H
 #endif
 
+#ifdef use_namespace
+namespace ROBOOP {
+	using namespace NEWMAT;
+#endif
 #pragma once
 #include "stdafx.h"
 #include <afxwin.h>
 #include "global_value.h" 
 #include "OpenGL/Include/freeglut.h"    //  opengl 秈顶library 膀セ glu.h ㎝gl.h
-
+#include "roboop/robot.h"
 class COpenGLControl : public CWnd
 {
 public:
@@ -89,6 +93,7 @@ public:
 	void Draw_grid();
 	void Draw_Atom_Robot_Stick();  // 礶堵次次篨夹籔次
 	void Draw_NTU8DOF_Robot_Stick();  // 礶禸次次篨夹籔次
+	void Draw_RobotArm(Robot &robot);
 	static bool glFlagATomStick;
 	static bool glFlagNTU8DOFStick;
 	static bool glFlagDrawSphere;

@@ -11,6 +11,7 @@
 #include "AtomControl.h"
 #include "ATomTrajForm.h"
 #include "GripperControl.h"
+#include "MyControlProject.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -105,6 +106,7 @@ BEGIN_MESSAGE_MAP(CRobot_v3Dlg, CDialogEx)
 	ON_BN_CLICKED(IDC_AtomTraj, &CRobot_v3Dlg::OnBnClickedAtomtraj)
 	ON_WM_SYSCOMMAND()
 	ON_BN_CLICKED(IDC_Gripper, &CRobot_v3Dlg::OnBnClickedGripper)
+	ON_BN_CLICKED(TorqueControlBTN, &CRobot_v3Dlg::OnBnClickedTorquecontrolbtn)
 END_MESSAGE_MAP()
 
 
@@ -242,7 +244,8 @@ HCURSOR CRobot_v3Dlg::OnQueryDragIcon()
 
 void CRobot_v3Dlg::OnBnClickedButton1()
 {
-	ProjectPlay mProjectplay;   //  sub-Project C++ can write anything... 
+	MyControlProject mMyControl;   //  sub-Project C++ can write anything... 
+	//mMyControl.MyTorqueControl();
 	//mProjectplay.AtomDynControl();
 	//m_OpenGLControl.a = true;
 }
@@ -345,4 +348,11 @@ void CRobot_v3Dlg::OnBnClickedGripper()
 	GripperControl *pDlg = new GripperControl();
 	pDlg->Create(IDD_Gripper,this);
 	pDlg->ShowWindow(SW_NORMAL);
+}
+
+void CRobot_v3Dlg::OnBnClickedTorquecontrolbtn()
+{
+	// TODO:  在此加入控制項告知處理常式程式碼
+	MyControlProject mPrj;
+	mPrj.MyTorqueControl();
 }

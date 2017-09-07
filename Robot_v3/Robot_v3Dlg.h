@@ -66,4 +66,5 @@ public:
 	CButton Gripper_Btn;
 	afx_msg void OnBnClickedGripper();
 
+	afx_msg void OnBnClickedTorquecontrolbtn();
 };

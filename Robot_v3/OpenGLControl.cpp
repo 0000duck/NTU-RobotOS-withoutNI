@@ -6,6 +6,11 @@
 #define PI 3.14159
 #endif
 
+#ifdef use_namespace
+namespace ROBOOP {
+	using namespace NEWMAT;
+#endif
+
 #include "ProjectPlay.h"   //  代刚Project
 //   ﹍てIO跑计  static糶猭
 bool COpenGLControl::glFlagATomStick = false;
@@ -153,10 +158,8 @@ void COpenGLControl::OnTimer(UINT nIDEvent)
 		{
 			// Clear color and depth buffer bits
 			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
 			// Draw OpenGL scene
 			DrawScene();
-
 			// Swap buffers
 			SwapBuffers(hdc);
 
@@ -280,7 +283,6 @@ void COpenGLControl::DrawScene(void)
 		Draw_NTU8DOF_Robot_Stick();   // 礶禸次次
 		glPopMatrix();
 	}
-
 	// 礶狾
 	glPushMatrix();
 	glTranslatef(0,0,0);
@@ -292,7 +294,6 @@ void COpenGLControl::DrawScene(void)
 	Draw_grid();
 	glPopMatrix();
 	glPopMatrix();
-
 }
 void COpenGLControl::Draw_Axis(float LINK_LENGTH)
 {
@@ -410,6 +411,61 @@ void COpenGLControl::Draw_Atom_Robot_Stick()
 			glBegin(GL_LINES);
 			glVertex3f(Tlast(4,1),Tlast(4,2),Tlast(4,3));
 			glVertex3f(T(4,1),T(4,2),T(4,3));
+			glEnd();
+		}
+	}
+}
+void COpenGLControl::Draw_RobotArm(Robot &robot)
+{
+	///////////礶絚/////////////////
+	glPushMatrix();
+	glTranslatef(-0.5, -0.25, 0);
+	Draw_Cube(0.5, 0.5, 1.2);
+	glPopMatrix();
+	Matrix Tlast(4, 4), T(4, 4);
+	int dof = robot.get_available_dof();
+	float t[16], tlast[16];
+	for (int i = 0; i < dof; i++)
+	{
+		T = robot.kine(i + 1).t();
+		if (i != 0)
+			Tlast = robot.kine(i).t();
+		else Tlast = 0;
+		for (int l = 0; l < 4; ++l)
+		for (int m = 0; m < 4; ++m)
+			t[l * 4 + m] = T(l + 1, m + 1);
+
+		if (i == dof - 1)
+		{
+			//  礶end絙繷
+			glPushMatrix();
+			glMultMatrixf(t);
+			Draw_Cute_Axis(0.08);
+			glPopMatrix();
+			// 礶次次
+			glLineWidth(5.0);
+			glColor3f(0.007, 0.968, 0.564);
+			glBegin(GL_LINES);
+			glVertex3f(Tlast(4, 1), Tlast(4, 2), Tlast(4, 3));
+			glVertex3f(T(4, 1), T(4, 2), T(4, 3));
+			glEnd();
+		}
+		else
+		{
+			//  礶DOFJoint翴
+			glPushMatrix();
+			glMultMatrixf(t);
+			glPushMatrix();
+			glColor3f(0.95, 0.5, 0);
+			glutSolidSphere(0.03, 10, 10);
+			glPopMatrix();
+			glPopMatrix();
+			// 礶次次
+			glLineWidth(5.0);
+			glColor3f(0.007, 0.968, 0.564);
+			glBegin(GL_LINES);
+			glVertex3f(Tlast(4, 1), Tlast(4, 2), Tlast(4, 3));
+			glVertex3f(T(4, 1), T(4, 2), T(4, 3));
 			glEnd();
 		}
 	}
